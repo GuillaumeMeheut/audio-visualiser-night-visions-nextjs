@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import styles from "./style.module.scss";
 
 type HexagonData = {
@@ -241,9 +242,7 @@ export default function Hexagons({
               key={indexPath}
               d={d}
               fill={
-                indexPath === 3 && currentMusicID === index
-                  ? getComputedStyle(document.body).getPropertyValue("--green1")
-                  : fill
+                indexPath === 3 && currentMusicID === index ? "#65AB9F" : fill
               }
             />
           ))}

@@ -10,19 +10,23 @@ import Image from "next/image";
 const MusicPlayer = ({ musics }: { musics: MusicData[] }) => {
   const [currentMusicID, setCurrentMusicID] = useState(13);
   const [isPlaying, setIsPlaying] = useState(false);
-  // const [currentTime, setCurrentTime] = useState(0);
-  // const [duration, setDuration] = useState(0);
 
-  const audioRef = useRef<HTMLAudioElement>(new Audio());
+  const audioRef = useRef<HTMLAudioElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const musicTitleHexaRef = useRef<HTMLDivElement>(null);
   const progressBarRef = useRef<HTMLDivElement>(null);
   const contextRef = useRef<AudioContext | null>(null);
   const srcRef = useRef<MediaElementAudioSourceNode | null>(null);
 
-  const initializeAudioContext = useCallback(() => {
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    if (!audioRef.current) {
+      audioRef.current = new Audio();
+    }
+
     if (!contextRef.current) {
-      contextRef.current = new (window.AudioContext || window.AudioContext)();
+      contextRef.current = new window.AudioContext();
       srcRef.current = contextRef.current.createMediaElementSource(
         audioRef.current
       );
@@ -65,9 +69,8 @@ const MusicPlayer = ({ musics }: { musics: MusicData[] }) => {
   }, []);
 
   useEffect(() => {
-    initializeAudioContext();
     createVisualizer();
-  }, [initializeAudioContext, createVisualizer]);
+  }, [createVisualizer]);
 
   useEffect(() => {
     if (audioRef.current) {
